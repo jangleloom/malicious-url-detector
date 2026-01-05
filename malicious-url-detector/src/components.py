@@ -74,7 +74,6 @@ def extract_components(url: str) -> dict:
     ext = tldextract.extract(hostname)
     subdomain_depth = 0 if not ext.subdomain else len(ext.subdomain.split("."))
     components["subdomain_depth"] = subdomain_depth
-    components["registered_domain"] = f"{ext.domain}.{ext.suffix}" if ext.suffix else ext.domain
 
     return components
 
