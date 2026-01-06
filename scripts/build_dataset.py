@@ -47,15 +47,29 @@ def main():
     phishtank_urls = load_phishtank_csv().apply(normalize_urls)
     urlhaus_urls = load_urlhaus_csv().apply(normalize_urls)
     tranco_urls = load_tranco_csv().apply(domain_to_url)
+    
+    # Load curated benign long URLs to reduce false positives
+    benign_long_path = "data/benign_long_urls.txt"
+    with open(benign_long_path, 'r') as f:
+        benign_long_urls = pd.Series([line.strip().lower() for line in f if line.strip()])
 
     # Create labeled DataFrames; mark 1 for malicious, 0 for benign
+    # Headers: url, label, source
     phish_df = pd.DataFrame({"url": phishtank_urls, "label": 1, "source": "phishtank"})
     urlhaus_df = pd.DataFrame({"url": urlhaus_urls, "label": 1, "source": "urlhaus"})
-    benign_df = pd.DataFrame({"url": tranco_urls, "label": 0, "source": "tranco"})
+    benign_tranco_df = pd.DataFrame({"url": tranco_urls, "label": 0, "source": "tranco"})
+    benign_long_df = pd.DataFrame({"url": benign_long_urls, "label": 0, "source": "curated"})
     
     # Balance dataset: sample benign URLs to match malicious count
+    # .sample randomly selects rows from DataFrame, n specifies number of rows
+    # random_state = 42 seeds the random number generator, ensure get same random URL sample each run
     malicious_count = len(phish_df) + len(urlhaus_df)
-    benign_df = benign_df.sample(n=min(malicious_count, len(benign_df)), random_state=42)
+    
+    # Use mix of Tranco (short) and curated (long) benign URLs
+    # Take all curated long URLs, fill remaining with Tranco
+    remaining = max(0, malicious_count - len(benign_long_df))
+    benign_tranco_sample = benign_tranco_df.sample(n=min(remaining, len(benign_tranco_df)), random_state=42)
+    benign_df = pd.concat([benign_long_df, benign_tranco_sample], ignore_index=True)
     
     # Combine all datasets
     all_df = pd.concat([phish_df, urlhaus_df, benign_df], ignore_index=True)
@@ -67,6 +81,7 @@ def main():
     
     # Save to CSV
     output_path = "data/processed/processed_dataset.csv"
+    # Check if directory exists, create if not
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     all_df.to_csv(output_path, index=False)
     print(f"Dataset saved to {output_path}")
