@@ -1,0 +1,9 @@
+github.io
+readthedocs.io
+medium.com
+dev.to
+reddit.com
+vercel.app
+netlify.app
+herokuapp.com
+githubusercontent.com
