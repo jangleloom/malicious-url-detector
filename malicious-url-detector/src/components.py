@@ -1,6 +1,7 @@
 import re 
 from urllib.parse import urlparse
 import tldextract
+import math
 
 # Helper function to count occurrences of a character in a string
 def count_char(s: str, ch: str) -> int:
@@ -37,16 +38,16 @@ def extract_components(url: str) -> dict:
     components = {}
 
     # Check if HTTPS is used
-    # URL length 
+    # URL length - use log to reduce sensitivity to absolute length
     # Hostname length ie. very long hostnames with deep subdomains 
     # Path length ie. long paths can be suspicious
     # Query length ie. long queries contain a lot of parameters 
 
     components["is_https"] = 1 if scheme == "https" else 0
-    components["url_len"] = len(url)
-    components["hostname_len"] = len(hostname)
-    components["path_len"] = len(path)
-    components["query_len"] = len(query)
+    components["url_len"] = math.log1p(len(url))  # log(1 + len) to avoid log(0)
+    components["hostname_len"] = math.log1p(len(hostname))
+    components["path_len"] = math.log1p(len(path))
+    components["query_len"] = len(query)  # Keep query length raw since it's usually 0
 
     # Check if hostname is an IP address ie. common phishing tactic
     is_ip = 1 if re.fullmatch(r"\d{1,3}(\.\d{1,3}){3}", hostname) else 0
@@ -55,7 +56,8 @@ def extract_components(url: str) -> dict:
     # Special character count 
     # @ and % are often used in phishing URLs 
     # Many . often means many subdomains 
-    for ch in ['-', '@', '?', '%', '.', '=', '_', '&', '/']:
+    # Note: / count removed - too many false positives on legitimate deep URLs
+    for ch in ['-', '@', '?', '%', '.', '=', '_', '&']:
         components[f"count_{ch}"] = count_char(url, ch)
 
 
@@ -74,6 +76,11 @@ def extract_components(url: str) -> dict:
     ext = tldextract.extract(hostname)
     subdomain_depth = 0 if not ext.subdomain else len(ext.subdomain.split("."))
     components["subdomain_depth"] = subdomain_depth
+    
+    # Check if TLD is common (helps reduce false positives for legitimate sites)
+    suffix = ext.suffix.lower()
+    tld_is_common = 1 if suffix in {"com", "org", "net", "edu", "gov", "io"} else 0
+    components["tld_is_common"] = tld_is_common
 
     return components
 
