@@ -5,9 +5,12 @@ from joblib import load
 
 from components import extract_components
 
-MODEL_PATH = "models/logistic_regression_model.joblib"
-WHITELIST_PATH = Path("config/whitelist.txt")
-PLATFORM_PATH = Path("config/platform_hosts.txt")
+# Get the project root directory (2 levels up from this file)
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+
+MODEL_PATH = PROJECT_ROOT / "models" / "logistic_regression_model.joblib"
+WHITELIST_PATH = PROJECT_ROOT / "config" / "whitelist.txt"
+PLATFORM_PATH = PROJECT_ROOT / "config" / "platform_hosts.txt"
 
 
 def load_domain_set(path: Path) -> set[str]:
@@ -56,8 +59,8 @@ def score_url(url: str) -> dict:
             "hostname": hostname,
             "tier": "trusted",
             "prob_malicious": 0.0,
-            "risk_score": 0,
-            "verdict": "LOW RISK (TRUSTED DOMAIN)",
+            "risk_score": 1,
+            "verdict": "LOW RISK",
         }
 
     # --- ML scoring ---
@@ -70,14 +73,14 @@ def score_url(url: str) -> dict:
     X = pd.DataFrame([numeric_feats]).reindex(columns=columns, fill_value=0)
 
     p_mal = float(model.predict_proba(X)[0][1])
-    risk_score = int(round(p_mal * 100))
 
     # Tier 2: platform-hosted soft allow (reduce risk, don't hard override)
     # Platform hosts are often used by both legitimate and malicious users 
     if is_platform:
         # reduce but not to 0: keeps some safety
-        risk_score = int(risk_score * 0.6)
-        p_mal = risk_score / 100.0
+        p_mal = p_mal * 0.6
+    
+    risk_score = int(round(p_mal * 100))
 
     if risk_score >= 80:
         verdict = "HIGH RISK"
@@ -87,6 +90,7 @@ def score_url(url: str) -> dict:
         verdict = "LOW RISK"
 
     tier = "platform" if is_platform else "normal"
+
 
     return {
         "url": url,
