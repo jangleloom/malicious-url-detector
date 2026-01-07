@@ -71,6 +71,18 @@ def extract_components(url: str) -> dict:
     # Match keywords against tokens
     for keyword in KEYWORDS:
         components[f"keyword_{keyword}"] = 1 if keyword in token_set else 0
+    
+    # Token statistics -- token count, average token length, max token length
+    token_lens = [len(t) for t in tokens] if tokens else [0]
+    components["token_count"] = len(tokens)
+    components["avg_token_len"] = sum(token_lens) / len(token_lens)
+    components["max_token_len"] = max(token_lens)
+    components["long_token_count"] = sum(1 for l in token_lens if l >= 20)
+
+    # Query structure features
+    # Docs URLs can be long but often have few query parameters while phishing URLs have many
+    components["query_param_count"] = 0 if not query else query.count("&") + 1
+    components["has_percent_encoding"] = 1 if "%" in query else 0
 
     # Subdomain depth and registered domain extraction using tldextract
     ext = tldextract.extract(hostname)
@@ -81,6 +93,13 @@ def extract_components(url: str) -> dict:
     suffix = ext.suffix.lower()
     tld_is_common = 1 if suffix in {"com", "org", "net", "edu", "gov", "io"} else 0
     components["tld_is_common"] = tld_is_common
+
+    # Digit and alnum ratio
+    u = url.lower()
+    digit_count = sum(c.isdigit() for c in u)
+    alnum_count = sum(c.isalnum() for c in u)
+    components["digit_ratio"] = digit_count / len(u) if len(u) > 0 else 0
+    components["alnum_ratio"] = alnum_count / len(u) if len(u) > 0 else 0
 
     return components
 
