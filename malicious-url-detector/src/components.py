@@ -8,9 +8,10 @@ def count_char(s: str, ch: str) -> int:
     return s.count(ch)
 
 KEYWORDS = [
-    "login", "signin", "verify", "verification", "secure", "security",
-    "account", "accounts", "auth", "authentication", "token",
-    "password", "support", "update", "billing"
+    "verify", "verification", "secure",
+     "auth", "authentication", "token",
+    "password", "support", "update", "billing", "login", "signin",
+    "bank", "account", "confirm", "click", 
     ]
 
 def extract_components(url: str) -> dict:
@@ -91,7 +92,7 @@ def extract_components(url: str) -> dict:
     
     # Check if TLD is common (helps reduce false positives for legitimate sites)
     suffix = ext.suffix.lower()
-    tld_is_common = 1 if suffix in {"com", "org", "net", "edu", "gov", "io"} else 0
+    tld_is_common = 1 if suffix in {"com", "org", "net", "edu", "gov", "io", "sg", "my", "uk", "us", "au", "ca", "de", "fr", "jp", "cn", "in"} else 0
     components["tld_is_common"] = tld_is_common
 
     # Digit and alnum ratio
