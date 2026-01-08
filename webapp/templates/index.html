@@ -44,6 +44,9 @@
                 border-radius: 10px;
                 max-width: 600px;
                 margin: 40px auto;
+                padding: 20px;
+                box-sizing: border-box;
+                overflow: hidden;
             }
 
             .verdict {
@@ -120,9 +123,11 @@
             .details {
                 font-family: "Atkinson Hyperlegible Mono", monospace;
                 text-align: left;
-                margin: 30px 20px 40px 60px;
+                margin: 30px 20px 40px 40px;
                 color: white;
                 font-size: 14px;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
             }
 
             .summary{ 
@@ -130,6 +135,8 @@
                 font-size: 15px;
                 margin: 0 20px 20px 20px;
                 text-align: center;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
             }
 
             .summary.high-risk {
