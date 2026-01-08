@@ -78,8 +78,15 @@ def score_url(url: str) -> dict:
     # Platform hosts are often used by both legitimate and malicious users 
     if is_platform:
         # reduce but not to 0: keeps some safety
-        p_mal = p_mal * 0.6
+        p_mal = p_mal ** 3
     
+
+    # Scale down extreme probabilities
+    if p_mal > 0.95:
+        p_mal = 0.95  # Cap at 95%
+    elif p_mal < 0.05:
+        p_mal = 0.05  # Floor at 5%
+
     risk_score = int(round(p_mal * 100))
 
     if risk_score >= 80:

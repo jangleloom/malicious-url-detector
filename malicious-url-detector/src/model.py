@@ -70,11 +70,12 @@ def main():
     else:
         raise ValueError(f"Unknown EVAL_MODE: {EVAL_MODE}")
 
-    # Train logistic regression model with probability calibration
-    # CalibratedClassifierCV improves probability estimates using cross-validation
-    base_model = LogisticRegression(max_iter=2000, class_weight="balanced")
-    model = CalibratedClassifierCV(base_model, method='sigmoid', cv=5)
+    # Train logistic regression model
+    base = LogisticRegression(max_iter=2000, class_weight="balanced", random_state=42, C=0.01)
+    # model = CalibratedClassifierCV(base, method="sigmoid", cv=5)
+    model = base
     model.fit(X_train, y_train)
+
 
     # Evaluate model
     y_pred = model.predict(X_test)
@@ -83,6 +84,20 @@ def main():
 
     print("\nClassification Report:")
     print(classification_report(y_test, y_pred, digits=4))
+
+    print("\nClassification Report:")
+    print(classification_report(y_test, y_pred, digits=4))
+
+    # ADD THIS CODE HERE:
+    feature_importance = pd.DataFrame({
+        'feature': X_train.columns,
+        'importance': abs(base.coef_[0])  # Use base, not model
+    }).sort_values('importance', ascending=False)
+
+    print("\nTop 10 Most Important Features:")
+    print(feature_importance.head(10))
+
+
 
     # Save trained model
     MODEL_PATH = "models/logistic_regression_model.joblib"
