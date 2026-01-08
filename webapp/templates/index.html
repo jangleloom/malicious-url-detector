@@ -26,6 +26,7 @@
                 font-family: 'Press Start 2P', cursive;
                 font-size: 10px;
                 text-align: center;
+                color: darkslategray;
             }
 
             .submit-button {
@@ -162,7 +163,7 @@
             </dotlottie-wc>
         </div>
         <form action="/check" method="post">
-            <input type="text" id="url" name="url" placeholder="Enter URL here..." style="width:600px; height:30px; border-radius: 50px;">
+            <input type="text" id="url" name="url" placeholder="Enter URL here..." required oninvalid="this.setCustomValidity('Please enter a URL!')" style="width:600px; height:30px; border-radius: 50px;">
             <br><br>
             <input type="submit" class="submit-button" value="Check URL" style="width:100px; height:30px;">
         </form>
