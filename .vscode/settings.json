@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./malicious-url-detector/src"
+    ]
+}
