@@ -59,7 +59,7 @@ def score_url(url: str) -> dict:
             "hostname": hostname,
             "tier": "trusted",
             "prob_malicious": 0.0,
-            "risk_score": 1,
+            "risk_score": 5,
             "verdict": "LOW RISK",
         }
 

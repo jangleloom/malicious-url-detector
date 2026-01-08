@@ -82,6 +82,16 @@ def main():
         ("https://kubernetes.io/docs/", 100),
         ("https://fastapi.tiangolo.com/tutorial/", 100),
         ("https://scikit-learn.org/stable/modules/", 100),
+        ("https://medium.com/tag/programming", 150),
+        ("https://towardsdatascience.com/", 150),
+        ("https://stackoverflow.com/questions/tagged/python", 200),
+        ("https://en.wikipedia.org/wiki/Python_(programming_language)", 100),
+        ("https://learn.microsoft.com/en-us/docs/", 150),
+        ("https://docs.aws.amazon.com/", 100),
+        ("https://www.w3schools.com/python/", 100),
+        ("https://www.freecodecamp.org/news/tag/python/", 100),
+        ("https://docs.docker.com/", 100),
+        ("https://cloud.google.com/docs/", 100),
     ]
     
     all_urls = set()
@@ -90,8 +100,8 @@ def main():
         urls = scrape_site(base_url, max_urls=max_urls, min_path_length=25)
         all_urls.update(urls)
         
-        if len(all_urls) >= 1000:
-            print(f"\nReached target of 1000+ URLs. Stopping.")
+        if len(all_urls) >= 3000:
+            print(f"\nReached target of 3000+ URLs. Stopping.")
             break
     
     # Save to file
