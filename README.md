@@ -1,9 +1,9 @@
 # Malicious URL Detector - Project Summary
 
-## 📋 Project Overview
+## Project Overview
 A machine learning-powered web application that detects malicious URLs using logistic regression. The system analyzes 39 URL features to classify URLs as benign or malicious with a tiered risk assessment system.
 
-## 🎯 What You Built
+## Implementation
 
 ### 1. **Machine Learning Model**
 - **Algorithm**: Logistic Regression with L2 regularization (C=0.01)
@@ -85,7 +85,7 @@ verify, verification, secure, auth, authentication, token, password, support, up
 - **Data Sources**: PhishTank, URLhaus, Tranco, custom scraped documentation URLs
 - **Version Control**: Git
 
-## 📊 Key Learnings
+## My Key Learnings 
 
 ### 1. **Training Data Bias**
 **Problem**: Initial model flagged legitimate long-path URLs (e.g., `github.io/project/login.html`) as 100% malicious.
@@ -129,10 +129,9 @@ verify, verification, secure, auth, authentication, token, password, support, up
 
 **Insight**: Keyword features like "login", "verify", "secure" had lower importance (< 0.2) than expected.
 
-## 🎨 UI/UX Design Decisions
+## Front-end: UI/UX Design Decisions
 
 ### Visual Design
-- **Retro Aesthetic**: Pixel font and arcade-style design
 - **Color Coding**:
   - Green (#4ade80): Low risk (0-39%)
   - Orange (#fb923c): Suspicious (40-79%)
@@ -144,7 +143,7 @@ verify, verification, secure, auth, authentication, token, password, support, up
 - **Visual Hierarchy**: Large risk meter with percentage display
 - **Accessibility**: High contrast colors, readable font sizes
 
-## 🚀 Deployment Workflow
+## Deployment Workflow
 
 ### Data Pipeline
 1. **scripts/build_dataset.py**: Downloads and combines datasets
@@ -188,7 +187,7 @@ git push
 # - Makes app live at https://[app-name].onrender.com
 ```
 
-## 📈 Performance Metrics
+## Performance Metrics
 
 ### Test Set Results (25,333 URLs)
 - **Accuracy**: 99.40%
@@ -209,7 +208,7 @@ Actual Benign   12,656  11
 **False Positives**: 11 (0.09%)
 **False Negatives**: 140 (1.11%)
 
-## 🔧 Technical Challenges & Solutions
+## Technical Challenges & Solutions
 
 ### Challenge 1: Template Path Resolution
 **Issue**: `TemplateNotFound` error when running FastAPI app.
@@ -248,9 +247,9 @@ templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 
 **Solution**: Created Dockerfile with Python 3.11-slim, updated requirements.txt with web dependencies (FastAPI, uvicorn, jinja2), deployed to Render with auto-deploy on git push.
 
-## 💡 Key Insights
+## Key Insights
 
-1. **Data Quality > Algorithm Complexity**: A simple logistic regression with balanced, diverse training data outperformed complex models with biased data.
+1. **Data Quality > Algorithm Complexity**: A simple logistic regression with balanced, diverse training data is better than complex models with biased data.
 
 2. **Feature Engineering Matters**: Log-transforming length features and creating ratio-based features (digit_ratio, alnum_ratio) improved model interpretability.
 
@@ -262,7 +261,7 @@ templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 
 6. **Deployment Enables Sharing**: Containerizing with Docker and deploying to Render makes the project accessible to anyone with a web browser.
 
-## 🎓 Skills Developed
+## New Skills LEarnt 
 
 ### Machine Learning
 - Feature engineering for URL analysis
@@ -299,7 +298,7 @@ templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 - Error handling and debugging
 - Documentation writing
 
-## 🔮 Future Improvements
+## Some Possible Future Improvements
 
 ### Model Enhancements
 1. **Additional Features**:
@@ -332,7 +331,7 @@ templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 4. **Monitoring**: Logging and performance metrics
 5. **CI/CD**: Automated testing and deployment
 
-## 📝 Project Files Structure
+## Project Files Structure
 ```
 Malicious URL Detector/
 ├── config/
@@ -363,7 +362,7 @@ Malicious URL Detector/
 └── requirements.txt               # Python dependencies
 ```
 
-## 🏆 Project Achievements
+## Project Outcome
 
 ✅ Built end-to-end ML application from scratch
 ✅ Achieved 99.40% accuracy on balanced test set
@@ -382,5 +381,3 @@ Malicious URL Detector/
 **Dataset Size**: 126,664 URLs
 **Model Training Time**: ~5 seconds
 **Inference Time**: <10ms per URL
-
-*Built with ❤️ as a hands-on learning project in cybersecurity and machine learning*
